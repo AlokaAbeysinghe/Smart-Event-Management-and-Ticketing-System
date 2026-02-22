@@ -1,0 +1,71 @@
+﻿@model IEnumerable<Smart_Event_Management_and_Ticketing_System.Models.Booking>
+
+@{
+    ViewData["Title"] = "My Reservations";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center">
+        <h2><i class="bi bi-ticket-perforated"></i> My Reservations</h2>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary btn-sm">Book More Events</a>
+    </div>
+    <hr />
+
+    @if (!Model.Any())
+    {
+            <div class="alert alert-info shadow-sm">
+                <i class="bi bi-info-circle me-2"></i> You haven't booked any tickets yet. 
+                <a asp-controller="Home" asp-action="Index" class="alert-link">Browse events now.</a>
+            </div>
+    }
+    else
+    {
+            <div class="table-responsive">
+                <table class="table table-hover shadow-sm bg-white align-middle">
+                    <thead class="table-primary">
+                        <tr>
+                            <th>Event</th>
+                            <th>Date</th>
+                            <th>Seat Type</th>
+                            <th class="text-center">Quantity</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in Model)
+                    {
+                            <tr>
+                                <td class="fw-bold text-primary">@item.Event?.EventName</td>
+
+                                <td>@(item.Event?.EventDate?.ToShortDateString() ?? "TBA")</td>
+
+                                <td>
+                                    <span class="badge bg-info text-dark">
+                                    @(item.SeatType?.TypeName ?? "General")
+                                    </span>
+                                </td>
+
+                                <td class="text-center">@item.Quantity</td>
+
+                                <td class="text-end">
+                                    <div class="btn-group" role="group">
+                                    @* View Event Details *@
+                                        <a href="@Url.Action("Details", "Event", new { id = item.EventId })" 
+                                           class="btn btn-sm btn-outline-primary" title="View Event">
+                                           <i class="bi bi-eye"></i> Details
+                                        </a>
+
+                                    @* The Receipt Button *@
+                                        <a href="@Url.Action("Receipt", "Event", new { id = item.BookingId })" 
+                                           class="btn btn-sm btn-success" title="Download Receipt">
+                                           <i class="bi bi-receipt"></i> Receipt
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+    }
+</div>

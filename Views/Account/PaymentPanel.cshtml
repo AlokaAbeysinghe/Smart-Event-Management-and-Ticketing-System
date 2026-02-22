@@ -1,0 +1,91 @@
+﻿@model dynamic
+
+@{
+    ViewData["Title"] = "Booking Payment";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <div class="text-center mb-4">
+                <h2 class="fw-bold">Finalize Your Payment</h2>
+                <p class="text-muted">Review your booking total and enter payment details to secure your seats.</p>
+            </div>
+
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-4">
+                    <form asp-action="ProcessOnlinePayment" method="get">
+                        <input type="hidden" name="method" value="Card" />
+
+                        <h5 class="mb-3 fw-bold text-dark border-bottom pb-2">Credit/Debit Card Details</h5>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Full Name on Card</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="bi bi-person"></i></span>
+                                <input type="text" name="cardName" class="form-control" placeholder="John Doe" required />
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Card Number</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="bi bi-credit-card"></i></span>
+                                <input type="text" name="cardNumber" class="form-control" placeholder="1234 5678 9101 1121" required />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Expiry Date</label>
+                                <input type="text" class="form-control" placeholder="MM/YY" required />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">CVV</label>
+                                <input type="password" class="form-control" placeholder="***" required />
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        @* FIX: The Read-Only Display (Removes commas for the URL) *@
+                        <div class="bg-light p-3 rounded border mb-4">
+                            <label class="form-label text-primary fw-bold mb-1">Total Amount Payable</label>
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-text bg-primary text-white border-0">LKR</span>
+                                <input type="text" name="amount" class="form-control fw-bold text-primary border-primary bg-white" 
+                                       value="@ViewBag.Total.Replace(",", "")" readonly />
+                            </div>
+                            <div class="mt-2 text-muted small">
+                                <i class="bi bi-info-circle me-1"></i> 
+                                Includes base price and <strong>VIP/VVIP surcharges</strong>.
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold shadow-sm py-3">
+                            <i class="bi bi-shield-lock-fill me-2"></i> Pay Now & Generate Receipt
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            @* FIX: The Cash Link (Removes commas for the URL) *@
+            <div class="text-center mt-4 p-3 border rounded bg-white shadow-sm">
+                <p class="text-muted mb-2">Don't want to use a card?</p>
+                <a asp-action="ProcessOnlinePayment" 
+                   asp-route-method="Cash" 
+                   asp-route-amount="@ViewBag.Total.Replace(",", "")" 
+                   asp-route-cardName="Guest" 
+                   class="btn btn-outline-success px-5 fw-semibold">
+                    <i class="bi bi-cash-stack me-2"></i>Confirm Cash Payment at Venue
+                </a>
+            </div>
+
+            <div class="mt-4 text-center">
+                <a asp-controller="Home" asp-action="Index" class="text-decoration-none text-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to Event List
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

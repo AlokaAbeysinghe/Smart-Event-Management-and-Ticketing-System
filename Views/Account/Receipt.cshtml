@@ -1,0 +1,89 @@
+﻿@model Smart_Event_Management_and_Ticketing_System.Models.Booking
+
+@{
+    ViewData["Title"] = "Payment Receipt";
+}
+
+<div class="container my-5">
+    @* Success Message *@
+    <div class="text-center mb-4">
+        <h2 class="text-success fw-bold"><i class="bi bi-check-circle"></i> Payment Processed</h2>
+        <p class="text-muted">Thank you for your purchase. Your seats are reserved.</p>
+    </div>
+
+    <div class="card shadow border-0 mx-auto" style="max-width: 600px;">
+        <div class="card-header bg-dark text-white text-center py-4">
+            <h2 class="mb-0">OFFICIAL RECEIPT</h2>
+            <p class="small mb-0">Booking Reference: #@(Model?.BookingId.ToString() ?? "N/A")</p>
+        </div>
+
+        <div class="card-body p-4">
+            <div class="row mb-4">
+                <div class="col-6">
+                    <h6 class="text-muted text-uppercase small">Billed To:</h6>
+                    <p class="fw-bold mb-0">@(ViewBag.Customer ?? Model?.Member?.Fullname ?? "Guest User")</p>
+                    <p class="text-muted small">@Model?.Member?.Email</p>
+                </div>
+                <div class="col-6 text-end">
+                    <h6 class="text-muted text-uppercase small">Transaction Date:</h6>
+                    <p class="fw-bold mb-0">@(ViewBag.Date ?? DateTime.Now.ToString("f"))</p>
+                    <p class="text-muted small">ID: @ViewBag.TransactionId</p>
+                </div>
+            </div>
+
+            <table class="table table-borderless border-top border-bottom">
+                <thead>
+                    <tr class="text-muted small text-uppercase">
+                        <th>Description</th>
+                        <th class="text-center">Qty</th>
+                        <th class="text-end">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <span class="fw-bold">@(Model?.Event?.EventName ?? "Event Ticket")</span><br />
+                            @* FIX: Dynamic Type Display *@
+                            <small class="text-muted">
+                                Type: @(ViewBag.ForceType ?? Model?.SeatType?.TypeName ?? "Standard")
+                            </small>
+                        </td>
+                        <td class="text-center">@(Model?.Quantity.ToString() ?? "1")</td>
+                        @* FIX: Dynamic Row Total *@
+                        <td class="text-end fw-bold">
+                            LKR @ViewBag.Total
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="row mt-4">
+                <div class="col-7">
+                    <p class="small text-muted"><strong>Payment Method:</strong> @(ViewBag.Method ?? "Card")</p>
+                    <p class="small text-muted">
+                        <strong>Status:</strong> 
+                        @if (ViewBag.Method == "Cash")
+                        {
+                                <span class="badge bg-warning text-dark">Pending (Pay at Venue)</span>
+                        }
+                        else
+                        {
+                                <span class="badge bg-success">Paid</span>
+                        }
+                    </p>
+                </div>
+                <div class="col-5 text-end">
+                    @* FIX: Final BIG Blue Total *@
+                    <h4 class="text-primary fw-bold">TOTAL: LKR @ViewBag.Total</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer bg-light text-center py-3 d-print-none">
+            <button onclick="window.print()" class="btn btn-outline-dark btn-sm me-2">
+                <i class="bi bi-printer"></i> Print Receipt
+            </button>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-primary btn-sm px-4">Done</a>
+        </div>
+    </div>
+</div>
